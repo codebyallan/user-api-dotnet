@@ -46,4 +46,9 @@ public record User
         return this with { Password = newPassword, UpdatedAt = DateTime.UtcNow };
     }
 
+    public User MarkAsDeleted()
+    {
+        return this with { DeletedAt = DateTime.UtcNow };
+    }
+
 }
