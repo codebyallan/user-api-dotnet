@@ -5,6 +5,8 @@ using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using User.Api.Configurations;
+using User.Api.Domain.ValueObjects;
+using User.Api.Persistence.Serializers;
 
 namespace User.Api.Persistence;
 
@@ -32,6 +34,8 @@ public class MongoDbContext
 
         });
         }
+        BsonSerializer.TryRegisterSerializer(new EmailSerializer());
+        BsonSerializer.TryRegisterSerializer(new PasswordSerializer());
 
     }
     public IMongoCollection<Domain.Entities.User> Users => _database.GetCollection<Domain.Entities.User>("users");
