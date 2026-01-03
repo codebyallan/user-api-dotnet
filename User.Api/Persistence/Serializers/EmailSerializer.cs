@@ -14,7 +14,7 @@ public class EmailSerializer : SerializerBase<Email>
             context.Writer.WriteNull();
             return;
         }
-        context.Writer.WriteString(value.EmailAddress);
+        context.Writer.WriteString(value.Address);
     }
     public override Email Deserialize(BsonDeserializationContext context, BsonDeserializationArgs args)
     {

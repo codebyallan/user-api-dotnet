@@ -1,33 +1,38 @@
+using User.Api.Domain.Notifications;
+
 namespace User.Api.Domain.ValueObjects;
 
-public record Password
+public class Password : Notifiable
 {
-    public string Value { get; init; }
+    public string Value { get; private set; }
 
     public Password(string password)
     {
-        Validate(password);
         Value = password;
+        Validate();
     }
 
-    private static void Validate(string password)
+    private void Validate()
     {
-        if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Password cannot be empty", nameof(password));
+        if (string.IsNullOrWhiteSpace(Value))
+        {
+            AddNotification("Password", "Password cannot be empty!");
+            return;
+        }
         if (
-            password.Length < 8 || password.Length > 32 ||
-            !password.Any(char.IsUpper) ||
-            !password.Any(char.IsLower) ||
-            !password.Any(char.IsDigit) ||
-            !password.Any(ch => !char.IsLetterOrDigit(ch))
+            Value.Length < 8 || Value.Length > 32 ||
+            !Value.Any(char.IsUpper) ||
+            !Value.Any(char.IsLower) ||
+            !Value.Any(char.IsDigit) ||
+            !Value.Any(ch => !char.IsLetterOrDigit(ch))
             )
         {
-            throw new ArgumentException("Invalid password format", nameof(password));
+            AddNotification("Password", "Invalid password format!");
         }
     }
 
-    public Password UpdatePassword(string newPassword)
+    public Password UpdatePassword(string password)
     {
-        Validate(newPassword);
-        return this with { Value = newPassword };
+        return new Password(password);
     }
 }

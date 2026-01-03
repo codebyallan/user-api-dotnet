@@ -1,32 +1,36 @@
 using System.Net.Mail;
+using User.Api.Domain.Notifications;
 
 namespace User.Api.Domain.ValueObjects;
 
-public record Email
+public class Email : Notifiable
 {
-    public string EmailAddress { get; init; }
-    public Email(string emailAddress)
+    public string Address { get; private set; }
+    public Email(string address)
     {
-        EmailAddress = Parse(emailAddress);
+        Address = Parse(address);
     }
-    private static string Parse(string emailAddress)
+    private string Parse(string address)
     {
-        if (string.IsNullOrWhiteSpace(emailAddress)) throw new ArgumentException("Invalid email address", nameof(emailAddress));
+        if (string.IsNullOrWhiteSpace(address))
+        {
+            AddNotification("Email", "Empty email address!");
+            return string.Empty;
+        }
         try
         {
-            var m = new MailAddress(emailAddress);
+            var m = new MailAddress(address);
             return m.Address.Trim().ToLower();
         }
         catch (FormatException)
         {
-            throw new ArgumentException("Invalid email address format", nameof(emailAddress));
+            AddNotification("Email", "Invalid email address format!");
+            return string.Empty;
         }
     }
-    public Email UpdateEmail(string emailAddress)
+    public Email UpdateEmail(string address)
     {
-        return this with
-        {
-            EmailAddress = Parse(emailAddress)
-        };
+        return new Email(address);
+
     }
 }

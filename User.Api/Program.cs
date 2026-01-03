@@ -1,4 +1,5 @@
 using User.Api.Application.Interfaces;
+using User.Api.Application.Notifications;
 using User.Api.Application.Services;
 using User.Api.Configurations;
 using User.Api.Domain.Interfaces;
@@ -14,6 +15,8 @@ builder.Services.Configure<MongoDbConfigurations>(builder.Configuration.GetSecti
 builder.Services.AddSingleton<MongoDbContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<NotificationContext>();
+
 
 
 var app = builder.Build();

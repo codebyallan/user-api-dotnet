@@ -1,32 +1,35 @@
+using User.Api.Domain.Notifications;
+
 namespace User.Api.Domain.ValueObjects;
 
-public record FullName
+public class FullName : Notifiable
 {
-    public string FirstName { get; init; }
-    public string LastName { get; init; }
+    public string FirstName { get; private set; }
+    public string LastName { get; private set; }
 
     public FullName(string firstName, string lastName)
     {
-        Validate(firstName, lastName);
         FirstName = firstName;
         LastName = lastName;
+        Validate();
     }
 
-    private static void Validate(string firstName, string lastName)
+    private void Validate()
     {
-        if (string.IsNullOrWhiteSpace(firstName)) throw new ArgumentException("First name cannot be empty", nameof(firstName));
-        if (string.IsNullOrWhiteSpace(lastName)) throw new ArgumentException("Last name cannot be empty", nameof(lastName));
+        if (string.IsNullOrWhiteSpace(FirstName))
+            AddNotification(nameof(FirstName), "First name cannot be empty!");
+
+        if (string.IsNullOrWhiteSpace(LastName))
+            AddNotification(nameof(LastName), "Last name cannot be empty!");
     }
 
     public FullName UpdateFirstName(string firstName)
     {
-        Validate(firstName, LastName);
-        return this with { FirstName = firstName.Trim() };
+        return new FullName(firstName, LastName);
     }
 
     public FullName UpdateLastName(string lastName)
     {
-        Validate(FirstName, lastName);
-        return this with { LastName = lastName.Trim() };
+        return new FullName(FirstName, lastName);
     }
 }

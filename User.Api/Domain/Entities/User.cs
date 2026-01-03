@@ -1,54 +1,66 @@
+using User.Api.Domain.Notifications;
 using User.Api.Domain.ValueObjects;
 
 namespace User.Api.Domain.Entities;
 
-public record User
+public class User : Notifiable
 {
-    public Guid Id { get; init; }
-    public FullName FullName { get; init; }
-    public Email EmailAddress { get; init; }
-    public Password Password { get; init; }
-    public DateTime CreatedAt { get; init; }
-    public DateTime? UpdatedAt { get; init; }
-    public DateTime? DeletedAt { get; init; }
+    public Guid Id { get; private set; }
+    public FullName FullName { get; private set; }
+    public Email EmailAddress { get; private set; }
+    public Password Password { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    public DateTime? UpdatedAt { get; private set; }
+    public DateTime? DeletedAt { get; private set; }
 
     public User(Guid id, FullName fullName, Email emailAddress, Password password)
     {
-        if (id == Guid.Empty) throw new ArgumentException("Id cannot be empty", nameof(id));
+        if (id == Guid.Empty) throw new ArgumentException("Id cannot be empty!", nameof(id));
         Id = id;
         FullName = fullName;
         EmailAddress = emailAddress;
         Password = password;
         CreatedAt = DateTime.UtcNow;
+        Validate();
+    }
+    public void ChangeFirstName(string firstName)
+    {
+        FullName = FullName.UpdateFirstName(firstName);
+        UpdatedAt = DateTime.UtcNow;
+        Validate();
     }
 
-    public User ChangeFirstName(string firstName)
+    public void ChangeLastName(string lastName)
     {
-        FullName newFullName = FullName.UpdateFirstName(firstName);
-        return this with { FullName = newFullName, UpdatedAt = DateTime.UtcNow };
+        FullName = FullName.UpdateLastName(lastName);
+        UpdatedAt = DateTime.UtcNow;
+        Validate();
     }
 
-    public User ChangeLastName(string lastName)
+    public void ChangeEmailAddress(string emailAddress)
     {
-        FullName newFullName = FullName.UpdateLastName(lastName);
-        return this with { FullName = newFullName, UpdatedAt = DateTime.UtcNow };
+        EmailAddress = EmailAddress.UpdateEmail(emailAddress);
+        UpdatedAt = DateTime.UtcNow;
+        Validate();
     }
 
-    public User ChangeEmailAddress(string emailAddress)
+    public void ChangePassword(string password)
     {
-        Email newEmailAddress = EmailAddress.UpdateEmail(emailAddress);
-        return this with { EmailAddress = newEmailAddress, UpdatedAt = DateTime.UtcNow };
+        Password = Password.UpdatePassword(password);
+        UpdatedAt = DateTime.UtcNow;
+        Validate();
     }
 
-    public User ChangePassword(string password)
+    public void MarkAsDeleted()
     {
-        Password newPassword = Password.UpdatePassword(password);
-        return this with { Password = newPassword, UpdatedAt = DateTime.UtcNow };
+        DeletedAt = DateTime.UtcNow;
     }
-
-    public User MarkAsDeleted()
+    private void Validate()
     {
-        return this with { DeletedAt = DateTime.UtcNow };
+        ClearNotifications();
+        AddNotifications(FullName);
+        AddNotifications(EmailAddress);
+        AddNotifications(Password);
     }
 
 }
