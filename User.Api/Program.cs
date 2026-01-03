@@ -3,6 +3,7 @@ using User.Api.Application.Notifications;
 using User.Api.Application.Services;
 using User.Api.Configurations;
 using User.Api.Domain.Interfaces;
+using User.Api.Endpoints;
 using User.Api.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,5 +28,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Endpoints
+app.MapUserEndpoints();
 
 app.Run();
