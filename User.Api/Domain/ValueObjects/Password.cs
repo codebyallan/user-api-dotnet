@@ -5,11 +5,13 @@ namespace User.Api.Domain.ValueObjects;
 public class Password : Notifiable
 {
     public string Value { get; private set; }
-
-    public Password(string password)
+    public Password(string password, bool isAlreadyHashed = false)
     {
         Value = password;
-        Validate();
+        if (!isAlreadyHashed)
+        {
+            Validate();
+        }
     }
 
     private void Validate()

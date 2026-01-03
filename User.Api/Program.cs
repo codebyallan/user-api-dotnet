@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using User.Api.Application.Interfaces;
 using User.Api.Application.Notifications;
 using User.Api.Application.Services;
@@ -17,8 +18,8 @@ builder.Services.AddSingleton<MongoDbContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<NotificationContext>();
-
-
+builder.Services.AddScoped<IPasswordHasher<User.Api.Domain.Entities.User>, PasswordHasher<User.Api.Domain.Entities.User>>();
+builder.Services.AddScoped<IHashPasswordService, HashPasswordService>();
 
 var app = builder.Build();
 

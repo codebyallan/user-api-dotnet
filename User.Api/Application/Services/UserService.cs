@@ -7,7 +7,7 @@ using User.Api.Domain.ValueObjects;
 
 namespace User.Api.Application.Services;
 
-public class UserService(IUserRepository _userRepository, NotificationContext _context) : IUserService
+public class UserService(IUserRepository _userRepository, NotificationContext _context, IHashPasswordService _hashPasswordService) : IUserService
 {
     public async Task<UserResponse?> CreateUserAsync(CreateUserRequest request)
     {
@@ -21,6 +21,11 @@ public class UserService(IUserRepository _userRepository, NotificationContext _c
         {
             _context.AddNotifications(newUser);
             return null;
+        }
+        if (newUser.Password.IsValid)
+        {
+            string passwordHashed = _hashPasswordService.HashPassword(newUser, request.Password);
+            newUser.ApplyPasswordHash(passwordHashed);
         }
         await _userRepository.AddAsync(newUser);
         return new UserResponse(
@@ -111,7 +116,15 @@ public class UserService(IUserRepository _userRepository, NotificationContext _c
         }
         if (!string.IsNullOrEmpty(request.FirstName)) user.ChangeFirstName(request.FirstName);
         if (!string.IsNullOrEmpty(request.LastName)) user.ChangeLastName(request.LastName);
-        if (!string.IsNullOrEmpty(request.Password)) user.ChangePassword(request.Password);
+        if (!string.IsNullOrEmpty(request.Password))
+        {
+            user.ChangePassword(request.Password);
+            if (user.Password.IsValid)
+            {
+                string passwordHashed = _hashPasswordService.HashPassword(user, request.Password);
+                user.ApplyPasswordHash(passwordHashed);
+            }
+        }
         if (!user.IsValid || !_context.IsValid)
         {
             _context.AddNotifications(user);

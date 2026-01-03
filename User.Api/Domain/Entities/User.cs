@@ -51,6 +51,11 @@ public class User : Notifiable
         Validate();
     }
 
+    public void ApplyPasswordHash(string hash)
+    {
+        Password = new Password(hash, isAlreadyHashed: true);
+    }
+
     public void MarkAsDeleted()
     {
         DeletedAt = DateTime.UtcNow;
