@@ -1,3 +1,5 @@
+using User.Api.Application.Interfaces;
+using User.Api.Application.Services;
 using User.Api.Configurations;
 using User.Api.Domain.Interfaces;
 using User.Api.Persistence;
@@ -11,6 +13,8 @@ builder.Services.AddOpenApi();
 builder.Services.Configure<MongoDbConfigurations>(builder.Configuration.GetSection("MongoDbConfigurations"));
 builder.Services.AddSingleton<MongoDbContext>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 
 var app = builder.Build();
 
