@@ -33,7 +33,16 @@ public static class AuthEndpoints
 .WithDescription("Login user with email and password!")
 .Produces(StatusCodes.Status204NoContent)
 .Produces<ErrorResponse>(StatusCodes.Status400BadRequest);
-
+        auth.MapPost("/register", async (CreateUserRequest request, IUserService userService, NotificationContext context) =>
+                {
+                    var result = await userService.CreateUserAsync(request);
+                    return context.IsValid ? Results.Created($"/profile", result) : Results.BadRequest(new ErrorResponse(context.Notifications));
+                }
+                ).WithName("RegisterUser")
+                .WithSummary("Create a new User")
+                .WithDescription("Create a new User with the given information and returns the created User.")
+                .Produces<UserResponse>(StatusCodes.Status201Created)
+                .Produces<ErrorResponse>(StatusCodes.Status400BadRequest);
         auth.MapPost("/logout", async (HttpContext httpContext) =>
         {
             await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -41,5 +50,6 @@ public static class AuthEndpoints
         }).WithName("logout")
         .WithSummary("Logout user")
         .WithDescription("Logout user!");
+
     }
 }

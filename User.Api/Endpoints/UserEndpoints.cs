@@ -11,18 +11,7 @@ public static class UserEndpoints
 {
     public static void MapUserEndpoints(this IEndpointRouteBuilder app)
     {
-        var user = app.MapGroup("/users").WithTags("Users");
-
-        user.MapPost("/", async (CreateUserRequest request, IUserService userService, NotificationContext context) =>
-        {
-            var result = await userService.CreateUserAsync(request);
-            return context.IsValid ? Results.Created($"/users/{result!.Id}", result) : Results.BadRequest(new ErrorResponse(context.Notifications));
-        }
-        ).WithName("CreatedUser")
-        .WithSummary("Create a new User")
-        .WithDescription("Create a new User with the given information and returns the created User.")
-        .Produces<UserResponse>(StatusCodes.Status201Created)
-        .Produces<ErrorResponse>(StatusCodes.Status400BadRequest);
+        var user = app.MapGroup("/users").WithTags("Users").RequireAuthorization();
 
         user.MapGet("/", async (IUserService userService, NotificationContext context) =>
         {
