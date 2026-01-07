@@ -7,6 +7,20 @@ services:
       - "27017:27017"
     volumes:
       - mongo_data:/data/db
+  user-api:
+    build:
+      context: .
+      dockerfile: User.Api/Dockerfile
+    container_name: user-api
+    depends_on:
+      - mongo
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://0.0.0.0:8080
+      - MongoDbConfigurations__ConnectionString=mongodb://mongo:27017
+      - MongoDbConfigurations__DatabaseName=UserDb
+    ports:
+      - "8080:8080"
 
 volumes:
   mongo_data:
