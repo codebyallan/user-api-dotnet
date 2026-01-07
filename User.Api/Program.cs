@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi;
 using User.Api.Application.Interfaces;
@@ -30,6 +31,27 @@ builder.Services.AddSwaggerGen(options =>
         Description = "An ASP.NET Core Web API for managing Users"
     });
 });
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+        options.SlidingExpiration = true;
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SameSite = SameSiteMode.Strict;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.Events.OnRedirectToLogin = context =>
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            return Task.CompletedTask;
+        };
+        options.Events.OnRedirectToAccessDenied = context =>
+        {
+            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+            return Task.CompletedTask;
+        };
+    });
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
@@ -45,7 +67,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Auth
+app.UseAuthentication();
+app.UseAuthorization();
+
 // Endpoints
 app.MapUserEndpoints();
+app.MapAuthEndpoints();
 
 app.Run();
