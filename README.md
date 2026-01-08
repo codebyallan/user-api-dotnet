@@ -19,6 +19,7 @@
 
 ## Design Patterns
 - Repository to abstract data access
+- Factory to encapsulate complex entity creation and domain rules
 - Value Object for Email FullName Password
 - DTO to standardize input and output
 - Service Layer to orchestrate use cases
@@ -34,6 +35,7 @@
 
 ## Object Calisthenics applied
 - Prefer objects and avoid loose primitives
+- Keep Entities encapsulated
 - Small and cohesive classes
 - Short and objective methods
 - Meaningful and explicit names

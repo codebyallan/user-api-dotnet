@@ -7,7 +7,7 @@ using User.Api.Domain.ValueObjects;
 
 namespace User.Api.Application.Services;
 
-public class UserService(IUserRepository _userRepository, NotificationContext _context, IHashPasswordService _hashPasswordService) : IUserService
+public class UserService(IUserRepository _userRepository, NotificationContext _context, IHashPasswordService _hashPasswordService, IUserFactory _userFactory) : IUserService
 {
     public async Task<UserResponse?> CreateUserAsync(CreateUserRequest request)
     {
@@ -16,7 +16,7 @@ public class UserService(IUserRepository _userRepository, NotificationContext _c
         {
             _context.AddNotification("Email", "Email already exists in the system!");
         }
-        Domain.Entities.User newUser = new(Guid.NewGuid(), new FullName(request.FirstName, request.LastName), new Email(request.Email), new Password(request.Password));
+        Domain.Entities.User newUser = _userFactory.Create(request.FirstName, request.LastName, request.Email, request.Password);
         if (!newUser.IsValid || !_context.IsValid)
         {
             _context.AddNotifications(newUser);

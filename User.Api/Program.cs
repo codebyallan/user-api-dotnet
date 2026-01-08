@@ -5,6 +5,7 @@ using User.Api.Application.Interfaces;
 using User.Api.Application.Notifications;
 using User.Api.Application.Services;
 using User.Api.Configurations;
+using User.Api.Domain.Factories;
 using User.Api.Domain.Interfaces;
 using User.Api.Endpoints;
 using User.Api.Persistence;
@@ -52,6 +53,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     });
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddAuthorization();
+builder.Services.AddScoped<IUserFactory, UserFactory>();
 
 var app = builder.Build();
 
