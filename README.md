@@ -120,13 +120,16 @@ docker push your-registry.com/user-api:latest
 ## Key Endpoints
 - Authentication
 - Login and secure cookie issuance
+- Registration create user at POST /auth/register
 - Endpoints in AuthEndpoints.cs
 
 - Users
 - CRUD with domain validations
+- Protected with authorization required
 - Endpoints in UserEndpoints.cs
 ## Security Notes
 - Authentication cookies with secure policy and strict SameSite
+- Users endpoints require authorization
 - Reverse proxy with TLS is recommended in production
 
 ## Docker Compose
