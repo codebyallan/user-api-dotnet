@@ -88,7 +88,10 @@ public class UserService(IUserRepository _userRepository, NotificationContext _c
             {
                 _context.AddNotification("Email", "Email already exists  in the system!");
             }
-            user.ChangeEmailAddress(request.Email);
+            if (_context.IsValid)
+            {
+                user.ChangeEmailAddress(request.Email);
+            }
         }
         if (!string.IsNullOrEmpty(request.FirstName)) user.ChangeFirstName(request.FirstName);
         if (!string.IsNullOrEmpty(request.LastName)) user.ChangeLastName(request.LastName);
