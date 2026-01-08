@@ -25,6 +25,7 @@
 - Service Layer to orchestrate use cases
 - Notification to communicate domain failures
 - Dependency Injection for inversion of dependency
+- Domain Mapping: Implemented via extension methods to perform high-performance, type-safe conversions from Domain Entities to Response DTOs without the overhead of reflection.
 
 ## SOLID Principles
 - Single Responsibility each class has a clear focus
@@ -40,6 +41,7 @@
 - Short and objective methods
 - Meaningful and explicit names
 - Preferred immutability in value objects
+- Clean DTO Mapping: Decouples the internal domain representation from the external API contracts using a manual mapping approach for maximum transparency and performance.
 
 ## Technologies
 - .NET 10

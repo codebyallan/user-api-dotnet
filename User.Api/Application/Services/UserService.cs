@@ -1,6 +1,7 @@
 using User.Api.Application.DTOs.Request;
 using User.Api.Application.DTOs.Response;
 using User.Api.Application.Interfaces;
+using User.Api.Application.Mappings;
 using User.Api.Application.Notifications;
 using User.Api.Domain.Interfaces;
 using User.Api.Domain.ValueObjects;
@@ -28,23 +29,13 @@ public class UserService(IUserRepository _userRepository, NotificationContext _c
             newUser.ApplyPasswordHash(passwordHashed);
         }
         await _userRepository.AddAsync(newUser);
-        return new UserResponse(
-            newUser.Id,
-            newUser.FullName.FirstName,
-            newUser.FullName.LastName,
-            newUser.EmailAddress.Address
-        );
+        return newUser.ToResponse();
     }
 
     public async Task<IEnumerable<UserResponse>> GetAllUsersAsync()
     {
         IEnumerable<Domain.Entities.User> users = await _userRepository.GetAllAsync();
-        return users.Select(u => new UserResponse(
-            u.Id,
-            u.FullName.FirstName,
-            u.FullName.LastName,
-            u.EmailAddress.Address
-        )).ToList();
+        return users.Select(u => u.ToResponse()).ToList();
     }
 
     public async Task<UserResponse?> GetUserByEmailAsync(string email)
@@ -55,12 +46,7 @@ public class UserService(IUserRepository _userRepository, NotificationContext _c
             _context.AddNotification("Not Found", "User not found!");
             return null;
         }
-        return new UserResponse(
-            user.Id,
-            user.FullName.FirstName,
-            user.FullName.LastName,
-            user.EmailAddress.Address
-        );
+        return user.ToResponse();
     }
 
     public async Task<UserResponse?> GetUserByIdAsync(Guid id)
@@ -71,12 +57,7 @@ public class UserService(IUserRepository _userRepository, NotificationContext _c
             _context.AddNotification("Not Found", "User not found!");
             return null;
         }
-        return new UserResponse(
-            user.Id,
-            user.FullName.FirstName,
-            user.FullName.LastName,
-            user.EmailAddress.Address
-        );
+        return user.ToResponse();
     }
 
     public async Task<UserResponse?> SoftDeleteUserAsync(Guid id)
@@ -89,12 +70,7 @@ public class UserService(IUserRepository _userRepository, NotificationContext _c
         }
         user.MarkAsDeleted();
         await _userRepository.UpdateAsync(user);
-        return new UserResponse(
-            user.Id,
-            user.FullName.FirstName,
-            user.FullName.LastName,
-            user.EmailAddress.Address
-        );
+        return user.ToResponse();
     }
 
     public async Task<UserResponse?> UpdateUserAsync(Guid id, UpdateUserRequest request)
@@ -131,11 +107,6 @@ public class UserService(IUserRepository _userRepository, NotificationContext _c
             return null;
         }
         await _userRepository.UpdateAsync(user);
-        return new UserResponse(
-            user.Id,
-            user.FullName.FirstName,
-            user.FullName.LastName,
-            user.EmailAddress.Address
-        );
+        return user.ToResponse();
     }
 }
