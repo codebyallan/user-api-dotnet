@@ -5,7 +5,6 @@ using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
 using User.Api.Configurations;
-using User.Api.Domain.ValueObjects;
 using User.Api.Persistence.Serializers;
 
 namespace User.Api.Persistence;
@@ -17,6 +16,7 @@ public class MongoDbContext
     {
         MongoClient client = new(_configuration.Value.ConnectionString);
         _database = client.GetDatabase(_configuration.Value.DatabaseName);
+        CreateIndex();
     }
     public static void Configure()
     {
@@ -39,4 +39,13 @@ public class MongoDbContext
 
     }
     public IMongoCollection<Domain.Entities.User> Users => _database.GetCollection<Domain.Entities.User>("users");
+    public void CreateIndex()
+    {
+        CreateIndexOptions options = new() { Unique = true, Name = "UX_User_Email" };
+        CreateIndexModel<Domain.Entities.User> indexModel = new(
+            Builders<Domain.Entities.User>.IndexKeys.Ascending(t => t.EmailAddress),
+            options
+        );
+        Users.Indexes.CreateOne(indexModel);
+    }
 }
