@@ -23,7 +23,7 @@ public class AuthService(IUserRepository _repository, NotificationContext _conte
         List<Claim>? claims = [
             new(ClaimTypes.NameIdentifier,user.Id.ToString()),
             new(ClaimTypes.GivenName,user.FullName.FirstName),
-            new(ClaimTypes.Surname,user.FullName.FirstName),
+            new(ClaimTypes.Surname,user.FullName.LastName),
             new(ClaimTypes.Email, user.EmailAddress.Address)
         ];
         ClaimsIdentity? claimsIdentity = new(
