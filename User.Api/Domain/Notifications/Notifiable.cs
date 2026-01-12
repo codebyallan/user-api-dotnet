@@ -11,37 +11,25 @@ public abstract class Notifiable : INotifiable
 
     public void AddNotification(NotificationMessage message)
     {
-        if (message is null)
-        {
-            return;
-        }
+        if (message is null) return;
         _notifications.Add(message);
     }
 
     public void AddNotification(string key, string message)
     {
-        if (key is null || message is null)
-        {
-            return;
-        }
+        if (key is null || message is null) return;
         AddNotification(new NotificationMessage(key, message));
     }
 
     public void AddNotifications(IReadOnlyCollection<NotificationMessage> notifications)
     {
-        if (notifications is null)
-        {
-            return;
-        }
+        if (notifications is null) return;
         _notifications.AddRange(notifications);
     }
 
     public void AddNotifications(INotifiable notifiable)
     {
-        if (notifiable is null)
-        {
-            return;
-        }
+        if (notifiable is null) return;
         _notifications.AddRange(notifiable.Notifications);
     }
     public void ClearNotifications() => _notifications.Clear();

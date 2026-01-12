@@ -8,10 +8,7 @@ public class Password : Notifiable
     public Password(string password, bool isAlreadyHashed = false)
     {
         Value = password;
-        if (!isAlreadyHashed)
-        {
-            Validate();
-        }
+        if (!isAlreadyHashed) Validate();
     }
 
     private void Validate()
@@ -27,14 +24,9 @@ public class Password : Notifiable
             !Value.Any(char.IsLower) ||
             !Value.Any(char.IsDigit) ||
             !Value.Any(ch => !char.IsLetterOrDigit(ch))
-            )
-        {
-            AddNotification("Password", "Invalid password format!");
-        }
+            ) AddNotification("Password", "Invalid password format!");
     }
 
-    public Password UpdatePassword(string password)
-    {
-        return new Password(password);
-    }
+    public Password UpdatePassword(string password) => new(password);
+
 }

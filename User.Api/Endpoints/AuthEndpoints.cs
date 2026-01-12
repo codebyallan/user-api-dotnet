@@ -17,10 +17,7 @@ public static class AuthEndpoints
 {
     ClaimsPrincipal? principal = await authService.Login(request);
 
-    if (principal == null || !context.IsValid)
-    {
-        return Results.BadRequest(new ErrorResponse(context.Notifications));
-    }
+    if (principal == null || !context.IsValid) return Results.BadRequest(new ErrorResponse(context.Notifications));
 
     await httpContext.SignInAsync(
         CookieAuthenticationDefaults.AuthenticationScheme,

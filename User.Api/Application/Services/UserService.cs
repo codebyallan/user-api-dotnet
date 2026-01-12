@@ -84,14 +84,10 @@ public class UserService(IUserRepository _userRepository, NotificationContext _c
         if (!string.IsNullOrEmpty(request.Email) && request.Email != user.EmailAddress.Address)
         {
             Domain.Entities.User? userWithEmail = await _userRepository.GetByEmailAsync(new Email(request.Email));
-            if (userWithEmail != null)
-            {
-                _context.AddNotification("Email", "Email already exists  in the system!");
-            }
-            if (_context.IsValid)
-            {
-                user.ChangeEmailAddress(request.Email);
-            }
+            if (userWithEmail != null) _context.AddNotification("Email", "Email already exists  in the system!");
+
+            if (_context.IsValid) user.ChangeEmailAddress(request.Email);
+
         }
         if (!string.IsNullOrEmpty(request.FirstName)) user.ChangeFirstName(request.FirstName);
         if (!string.IsNullOrEmpty(request.LastName)) user.ChangeLastName(request.LastName);

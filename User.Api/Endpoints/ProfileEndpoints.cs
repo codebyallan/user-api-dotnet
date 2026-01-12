@@ -16,10 +16,7 @@ public static class ProfileEndpoints
         profile.MapGet("/", async (IUserService userService, ClaimsPrincipal claimsUser, NotificationContext context) =>
         {
             Guid? userId = claimsUser.GetId();
-            if (userId is null)
-            {
-                return Results.Unauthorized();
-            }
+            if (userId is null) return Results.Unauthorized();
             var user = await userService.GetUserByIdAsync(userId.Value);
             return context.IsValid ? Results.Ok(user) : context.Notifications.Any(n => n.Key == "Not Found") ? Results.NotFound(new ErrorResponse(context.Notifications)) : Results.BadRequest(new ErrorResponse(context.Notifications));
         }).WithName("GetCurrentUser")
@@ -33,10 +30,7 @@ public static class ProfileEndpoints
         profile.MapPut("/", async (UpdateUserRequest request, ClaimsPrincipal claimsUser, IUserService userService, NotificationContext context) =>
         {
             Guid? userId = claimsUser.GetId();
-            if (userId is null)
-            {
-                return Results.Unauthorized();
-            }
+            if (userId is null) return Results.Unauthorized();
             var user = await userService.UpdateUserAsync(userId.Value, request);
             return context.IsValid ? Results.Ok(user) : context.Notifications.Any(n => n.Key == "Not Found") ? Results.NotFound(new ErrorResponse(context.Notifications)) : Results.BadRequest(new ErrorResponse(context.Notifications));
         }).WithName("UpdatedCurrentUser")
@@ -50,10 +44,7 @@ public static class ProfileEndpoints
         profile.MapDelete("/", async (IUserService userService, ClaimsPrincipal claimsUser, NotificationContext context) =>
         {
             Guid? userId = claimsUser.GetId();
-            if (userId is null)
-            {
-                return Results.Unauthorized();
-            }
+            if (userId is null) return Results.Unauthorized();
             var user = await userService.SoftDeleteUserAsync(userId.Value);
             return context.IsValid ? Results.Ok(user) : context.Notifications.Any(n => n.Key == "Not Found") ? Results.NotFound(new ErrorResponse(context.Notifications)) : Results.BadRequest(new ErrorResponse(context.Notifications));
         }).WithName("DeletedCurrentUser")

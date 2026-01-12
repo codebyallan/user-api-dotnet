@@ -28,9 +28,5 @@ public class Email : Notifiable
             return string.Empty;
         }
     }
-    public Email UpdateEmail(string address)
-    {
-        return new Email(address);
-
-    }
+    public Email UpdateEmail(string address) => new(address);
 }

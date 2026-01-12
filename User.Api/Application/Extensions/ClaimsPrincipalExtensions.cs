@@ -8,12 +8,7 @@ public static class ClaimsPrincipalExtensions
     {
         string? id = user.FindFirst(ClaimTypes.NameIdentifier)?.Value
                  ?? user.FindFirst("sub")?.Value;
-
-        if (Guid.TryParse(id, out var guid))
-        {
-            return guid;
-        }
-
+        if (Guid.TryParse(id, out var guid)) return guid;
         return null;
     }
 }

@@ -16,20 +16,12 @@ public class FullName : Notifiable
 
     private void Validate()
     {
-        if (string.IsNullOrWhiteSpace(FirstName))
-            AddNotification(nameof(FirstName), "First name cannot be empty!");
+        if (string.IsNullOrWhiteSpace(FirstName)) AddNotification(nameof(FirstName), "First name cannot be empty!");
 
-        if (string.IsNullOrWhiteSpace(LastName))
-            AddNotification(nameof(LastName), "Last name cannot be empty!");
+        if (string.IsNullOrWhiteSpace(LastName)) AddNotification(nameof(LastName), "Last name cannot be empty!");
     }
 
-    public FullName UpdateFirstName(string firstName)
-    {
-        return new FullName(firstName, LastName);
-    }
+    public FullName UpdateFirstName(string firstName) => new(firstName, LastName);
 
-    public FullName UpdateLastName(string lastName)
-    {
-        return new FullName(FirstName, lastName);
-    }
+    public FullName UpdateLastName(string lastName) => new(FirstName, lastName);
 }
