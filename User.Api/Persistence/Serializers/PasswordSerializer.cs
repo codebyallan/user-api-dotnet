@@ -24,7 +24,7 @@ public class PasswordSerializer : SerializerBase<Password>
             context.Reader.ReadNull();
             return null!;
         }
-        return new Password(context.Reader.ReadString());
+        return new Password(context.Reader.ReadString(), isAlreadyHashed: true);
     }
 
 }
