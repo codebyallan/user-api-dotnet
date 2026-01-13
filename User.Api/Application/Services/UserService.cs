@@ -12,10 +12,11 @@ public class UserService(IUserRepository _userRepository, NotificationContext _c
 {
     public async Task<UserResponse?> CreateUserAsync(CreateUserRequest request)
     {
-        Domain.Entities.User? userWithEmail = await _userRepository.GetByEmailAsync(new Email(request.Email));
+        Domain.Entities.User? userWithEmail = await _userRepository.GetByEmailAsync(new Email(request.Email), true);
         if (userWithEmail is not null)
         {
             _context.AddNotification("Email", "Email already exists in the system!");
+            return null;
         }
         Domain.Entities.User newUser = _userFactory.Create(request.FirstName, request.LastName, request.Email, request.Password);
         if (!newUser.IsValid || !_context.IsValid)
@@ -40,7 +41,7 @@ public class UserService(IUserRepository _userRepository, NotificationContext _c
 
     public async Task<UserResponse?> GetUserByEmailAsync(string email)
     {
-        Domain.Entities.User? user = await _userRepository.GetByEmailAsync(new Email(email));
+        Domain.Entities.User? user = await _userRepository.GetByEmailAsync(new Email(email), false);
         if (user is null)
         {
             _context.AddNotification("Not Found", "User not found!");
@@ -83,7 +84,7 @@ public class UserService(IUserRepository _userRepository, NotificationContext _c
         }
         if (!string.IsNullOrEmpty(request.Email) && request.Email != user.EmailAddress.Address)
         {
-            Domain.Entities.User? userWithEmail = await _userRepository.GetByEmailAsync(new Email(request.Email));
+            Domain.Entities.User? userWithEmail = await _userRepository.GetByEmailAsync(new Email(request.Email), true);
             if (userWithEmail != null) _context.AddNotification("Email", "Email already exists  in the system!");
 
             if (_context.IsValid) user.ChangeEmailAddress(request.Email);

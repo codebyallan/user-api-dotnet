@@ -6,7 +6,7 @@ public interface IUserRepository
 {
     Task<IEnumerable<Entities.User>> GetAllAsync();
     Task<Entities.User?> GetByIdAsync(Guid id);
-    Task<Entities.User?> GetByEmailAsync(Email email);
+    Task<Entities.User?> GetByEmailAsync(Email email,bool includeDeleted);
     Task AddAsync(Entities.User user);
     Task UpdateAsync(Entities.User user);
     Task SoftDeleteAsync(Entities.User user);

@@ -13,7 +13,7 @@ public class AuthService(IUserRepository _repository, NotificationContext _conte
 {
     public async Task<ClaimsPrincipal?> Login(AuthRequest request)
     {
-        Domain.Entities.User? user = await _repository.GetByEmailAsync(new Email(request.Email));
+        Domain.Entities.User? user = await _repository.GetByEmailAsync(new Email(request.Email), false);
 
         if (user is null || !_hashPasswordService.VerifyPassword(user, user.Password.Value, request.Password))
         {

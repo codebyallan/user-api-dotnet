@@ -16,9 +16,11 @@ public class UserRepository(MongoDbContext _dbContext) : IUserRepository
         return await _dbContext.Users.Find(u => u.DeletedAt == null).ToListAsync();
     }
 
-    public async Task<Domain.Entities.User?> GetByEmailAsync(Email email)
+    public async Task<Domain.Entities.User?> GetByEmailAsync(Email email, bool includeDeleted = false)
     {
-        return await _dbContext.Users.Find(u => u.DeletedAt == null && u.EmailAddress == email).FirstOrDefaultAsync();
+        return await _dbContext.Users
+        .Find(u => u.EmailAddress == email && (includeDeleted || u.DeletedAt == null))
+        .FirstOrDefaultAsync();
     }
 
     public async Task<Domain.Entities.User?> GetByIdAsync(Guid id)
